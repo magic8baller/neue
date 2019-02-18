@@ -57,8 +57,6 @@ class Movies extends Component {
       sortColumn
     } = this.state
 
-    if (filteredCount === 0) return <p> There are no movies in the database.</p>
-
     const filteredMovies =
       selectedGenre && selectedGenre._id
         ? allMovies.filter(m => m.genre._id === selectedGenre._id)
@@ -71,6 +69,8 @@ class Movies extends Component {
     )
 
     const filteredCount = filteredMovies.length
+
+    if (filteredCount === 0) return <p> There are no movies in the database.</p>
 
     const movies = paginate(sorted, currentPage, pageSize)
 
