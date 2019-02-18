@@ -5,20 +5,21 @@ import Pagination from './common/pagination'
 import { getGenres } from '../services/fakeGenreService'
 import { getMovies } from '../services/fakeMovieService'
 import { paginate } from '../utils/paginate'
-
+import _ from 'lodash'
 class Movies extends Component {
   state = {
     movies: [],
     genres: [],
     pageSize: 4,
     currentPage: 1,
-    selectedGenre: null
+    sortColumn: { path: 'title', order: 'asc' }
+    // selectedGenre: null,
   }
 
   componentDidMount() {
     const genres = [{ name: 'All Genres' }, ...getGenres()]
-
-    this.setState({ movies: getMovies(), genres })
+    //_id: '' gets rid of key warning b/c rest of genres had own ids, now was comin up undefined..
+    this.setState({ _id: '', movies: getMovies(), genres })
   }
 
   handleDelete = movie => {
@@ -43,12 +44,24 @@ class Movies extends Component {
     this.setState({ selectedGenre: genre, currentPage: 1 })
   }
 
+  handleSort = path => {
+    const sortColumn = { ...this.state.sortColumn }
+    if (sortColumn.path === path) {
+      sortColumn.order = sortColumn.order === 'asc' ? 'desc' : 'asc'
+    } else {
+      sortColumn.path = path
+      sortColumn.order = 'asc'
+    }
+    this.setState({ sortColumn })
+  }
+
   render() {
     const {
       movies: allMovies,
       pageSize,
       currentPage,
-      selectedGenre
+      selectedGenre,
+      sortColumn
     } = this.state
 
     if (filteredCount === 0) return <p> There are no movies in the database.</p>
@@ -57,8 +70,16 @@ class Movies extends Component {
       selectedGenre && selectedGenre._id
         ? allMovies.filter(m => m.genre._id === selectedGenre._id)
         : allMovies
+
+    const sorted = _.orderBy(
+      filteredMovies,
+      [sortColumn.path],
+      [sortColumn.order]
+    )
+
     const filteredCount = filteredMovies.length
-    const movies = paginate(filteredMovies, currentPage, pageSize)
+
+    const movies = paginate(sorted, currentPage, pageSize)
 
     return (
       <div className="row">
@@ -75,6 +96,7 @@ class Movies extends Component {
             movies={movies}
             onLike={this.handleLike}
             onDelete={this.handleDelete}
+            onSort={this.handleSort}
           />
           <Pagination
             itemsCount={filteredCount}
