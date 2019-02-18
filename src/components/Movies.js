@@ -16,7 +16,9 @@ class Movies extends Component {
   }
 
   componentDidMount() {
-    this.setState({ movies: getMovies(), genres: getGenres() })
+    const genres = [{ name: 'All Genres' }, ...getGenres()]
+
+    this.setState({ movies: getMovies(), genres })
   }
 
   handleDelete = movie => {
@@ -38,7 +40,8 @@ class Movies extends Component {
   }
 
   handleGenreSelect = genre => {
-    this.setState({ selectedGenre: genre })
+    //reset page to 1 upon each genre selection
+    this.setState({ selectedGenre: genre, currentPage: 1 })
   }
 
   render() {
@@ -51,9 +54,11 @@ class Movies extends Component {
 
     if (filteredCount === 0) return <p> There are no movies in the database.</p>
 
-    const filteredMovies = selectedGenre
-      ? allMovies.filter(m => m.genre._id === selectedGenre._id)
-      : allMovies
+    //if selected genre and has id- all genres has no id! so will get all movies
+    const filteredMovies =
+      selectedGenre && selectedGenre._id
+        ? allMovies.filter(m => m.genre._id === selectedGenre._id)
+        : allMovies
     const filteredCount = filteredMovies.length
     const movies = paginate(filteredMovies, currentPage, pageSize)
 
