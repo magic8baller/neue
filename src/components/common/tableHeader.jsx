@@ -1,8 +1,4 @@
 import React, { Component } from 'react'
-//component interface:
-// columns: []
-// sortColumn: {}
-// onSort f()
 
 class TableHeader extends Component {
   raiseSort = path => {

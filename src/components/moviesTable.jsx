@@ -3,7 +3,6 @@ import Table from './common/table'
 import Like from './common/like'
 
 class MoviesTable extends Component {
-  // add new property set as jsx expression ! is really jus a good, POJO!
   columns = [
     { path: 'title', label: 'Title' },
     { path: 'genre.name', label: 'Genre' },

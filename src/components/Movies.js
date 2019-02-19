@@ -18,7 +18,7 @@ class Movies extends Component {
 
   componentDidMount() {
     const genres = [{ name: 'All Genres' }, ...getGenres()]
-    //_id: '' gets rid of key warning b/c rest of genres had own ids, now was comin up undefined..
+
     this.setState({ _id: '', movies: getMovies(), genres })
   }
 
